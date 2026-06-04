@@ -1,0 +1,204 @@
+@startuml Orivix Class Diagram
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle Bold
+
+' ── Abstract ────────────────────────────────────────────────
+abstract class BaseModel {
+  +created_at: datetime
+  +updated_at: datetime
+  +created_by: UUID
+  +updated_by: UUID
+  +deleted_at: datetime
+}
+
+' ── Public Schema ───────────────────────────────────────────
+package "Public Schema" {
+  class Tenant {
+    +id: UUID
+    +name: string
+    +schema_name: string
+    +created_at: datetime
+  }
+
+  class Domain {
+    +id: UUID
+    +domain: string
+    +is_primary: bool
+  }
+}
+
+' ── accounts ────────────────────────────────────────────────
+package "accounts" {
+  class User {
+    +id: UUID
+    +email: string
+    +username: string
+    +password: string
+    +role: UserRole
+    +is_active: bool
+    +force_password_change: bool
+  }
+
+  enum UserRole {
+    ADMIN
+    ADVISOR
+    REPRESENTATIVE
+  }
+}
+
+' ── classrooms ──────────────────────────────────────────────
+package "classrooms" {
+  class Classroom {
+    +id: UUID
+    +name: string
+    +description: string
+    +status: ClassroomStatus
+    +start_date: date
+    +end_date: date
+  }
+
+  enum ClassroomStatus {
+    ACTIVE
+    CLOSED
+  }
+}
+
+' ── students ────────────────────────────────────────────────
+package "students" {
+  class Student {
+    +id: UUID
+    +name: string
+    +email: string
+  }
+
+  class ClassMembership {
+    +id: UUID
+  }
+
+  class Representative {
+    +id: UUID
+  }
+}
+
+' ── attendance ──────────────────────────────────────────────
+package "attendance" {
+  class Attendance {
+    +id: UUID
+    +date: date
+    +status: AttendanceStatus
+    +submitted_at: datetime
+  }
+
+  enum AttendanceStatus {
+    DRAFT
+    SUBMITTED
+  }
+
+  class AttendanceRecord {
+    +id: UUID
+    +status: AttendanceRecordStatus
+    +justification: text
+    +arrival_time: time
+    +departure_time: time
+  }
+
+  enum AttendanceRecordStatus {
+    PRESENT
+    ABSENT
+    JUSTIFIED_ABSENCE
+  }
+}
+
+' ── observations ────────────────────────────────────────────
+package "observations" {
+  class Observation {
+    +id: UUID
+    +category: ObservationCategory
+    +description: text
+    +is_reviewed: bool
+    +reviewed_at: datetime
+  }
+
+  enum ObservationCategory {
+    BEHAVIOR
+    HEALTH
+    CONFLICT
+    PERFORMANCE
+    OTHER
+  }
+}
+
+' ── advisor ─────────────────────────────────────────────────
+package "advisor" {
+  class AdvisorNote {
+    +id: UUID
+    +content: text
+  }
+}
+
+' ── notifications ────────────────────────────────────────────
+package "notifications" {
+  class Notification {
+    +id: UUID
+    +type: NotificationType
+    +related_id: UUID
+    +is_read: bool
+    +created_at: datetime
+  }
+
+  enum NotificationType {
+    ATTENDANCE_SUBMITTED
+    OBSERVATION_CREATED
+  }
+}
+
+' ── Inheritance ─────────────────────────────────────────────
+BaseModel <|-- User
+BaseModel <|-- Classroom
+BaseModel <|-- Student
+BaseModel <|-- ClassMembership
+BaseModel <|-- Representative
+BaseModel <|-- Attendance
+BaseModel <|-- AttendanceRecord
+BaseModel <|-- Observation
+BaseModel <|-- AdvisorNote
+
+' ── Public schema relations ──────────────────────────────────
+Tenant "1" *-- "1..*" Domain
+
+' ── accounts ─────────────────────────────────────────────────
+User ..> UserRole
+
+' ── classrooms ───────────────────────────────────────────────
+Classroom ..> ClassroomStatus
+
+' ── students ─────────────────────────────────────────────────
+ClassMembership "N" --> "1" Student
+ClassMembership "N" --> "1" Classroom
+Representative "N" --> "1" User
+Representative "N" --> "1" Student
+Representative "N" --> "1" Classroom
+
+' ── attendance ───────────────────────────────────────────────
+Attendance "N" --> "1" Classroom
+Attendance "N" --> "1" User
+Attendance ..> AttendanceStatus
+AttendanceRecord "N" --> "1" Attendance
+AttendanceRecord "N" --> "1" Student
+AttendanceRecord ..> AttendanceRecordStatus
+
+' ── observations ─────────────────────────────────────────────
+Observation "N" --> "1" Classroom
+Observation "N" --> "1" Student
+Observation "N" --> "1" User
+Observation ..> ObservationCategory
+
+' ── advisor ──────────────────────────────────────────────────
+AdvisorNote "N" --> "1" User
+
+' ── notifications ────────────────────────────────────────────
+Notification "N" --> "1" User
+Notification ..> NotificationType
+
+@enduml
