@@ -6,12 +6,18 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from domains.accounts.enums import UserRole
+from domains.accounts.models import User
+from domains.accounts.permissions import IsAdminRole
 from domains.accounts.repositories import UserRepository
 from domains.accounts.serializers import (
+    AdvisorSerializer,
     ChangePasswordSerializer,
+    CreateAdvisorSerializer,
     ForgotPasswordSerializer,
     LoginSerializer,
     ResetPasswordSerializer,
+    ToggleAdvisorSerializer,
 )
 from domains.accounts.services import AuthService
 from domains.accounts.tokens import password_reset_token
@@ -116,3 +122,42 @@ class ResetPasswordView(APIView):
         user.force_password_change = False
         user.save(update_fields=["password", "force_password_change"])
         return Response({"detail": "Senha redefinida com sucesso."})
+
+
+class AdminAdvisorView(APIView):
+    permission_classes = [IsAdminRole]
+
+    def get(self, request):
+        advisors = User.objects.filter(role=UserRole.ADVISOR)
+        serializer = AdvisorSerializer(advisors, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = CreateAdvisorSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        result = AuthService.create_advisor(
+            email=serializer.validated_data["email"],
+            username=serializer.validated_data["username"],
+        )
+
+        if not result.success:
+            return Response({"detail": result.error.message}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(AdvisorSerializer(result.data).data, status=status.HTTP_201_CREATED)
+
+
+class AdminAdvisorDetailView(APIView):
+    permission_classes = [IsAdminRole]
+
+    def patch(self, request, pk):
+        user = UserRepository.get_by_id(pk)
+        if not user or user.role != UserRole.ADVISOR:
+            return Response({"detail": "Advisor não encontrado."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ToggleAdvisorSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user.is_active = serializer.validated_data["is_active"]
+        user.save(update_fields=["is_active"])
+        return Response(AdvisorSerializer(user).data)
