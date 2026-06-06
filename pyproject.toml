@@ -39,6 +39,7 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 testpaths = ["backend"]
+pythonpath = ["backend"]
 addopts = "--cov=backend --cov-report=term-missing --cov-fail-under=80"
 
 [tool.coverage.run]
