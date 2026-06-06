@@ -51,3 +51,4 @@
 - [ ] Attendance editing with justification
 - [ ] Dashboard KPIs for advisors
 - [ ] Reports and data export
+- [ ] Holiday integration: BrasilAPI for national holidays + manual registration of state/municipal holidays by advisor. Holidays cannot be marked and are excluded from attendance calculations.
