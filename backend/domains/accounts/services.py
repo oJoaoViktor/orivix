@@ -1,6 +1,9 @@
+import secrets
+
 from django.conf import settings
 from django.core.mail import send_mail
 
+from domains.accounts.enums import UserRole
 from domains.accounts.repositories import UserRepository
 from shared.exceptions import Result
 
@@ -22,6 +25,42 @@ class AuthService:
             return Result.fail("INVALID_CREDENTIALS", "Email, username ou senha inválidos.")
 
         return Result.ok(user)
+
+    @staticmethod
+    def create_advisor(email: str, username: str) -> Result:
+        if UserRepository.email_exists(email):
+            return Result.fail("EMAIL_TAKEN", "Este email já está em uso.")
+        if UserRepository.username_exists(username):
+            return Result.fail("USERNAME_TAKEN", "Este username já está em uso.")
+
+        temporary_password = secrets.token_urlsafe(12)
+
+        from domains.accounts.models import User
+        user = User.objects.create_user(
+            email=email,
+            username=username,
+            password=temporary_password,
+            role=UserRole.ADVISOR,
+            force_password_change=True,
+        )
+
+        AuthService._send_welcome_email(user, temporary_password)
+        return Result.ok(user)
+
+    @staticmethod
+    def _send_welcome_email(user, temporary_password: str) -> None:
+        send_mail(
+            subject="Bem-vindo ao Orivix — suas credenciais de acesso",
+            message=(
+                f"Olá!\n\n"
+                f"Sua conta foi criada.\n\n"
+                f"Email: {user.email}\n"
+                f"Senha temporária: {temporary_password}\n\n"
+                f"Acesse {settings.FRONTEND_URL} e altere sua senha no primeiro login."
+            ),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+        )
 
     @staticmethod
     def send_password_reset_email(user, uid: str, token: str) -> None:
