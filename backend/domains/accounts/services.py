@@ -2,10 +2,10 @@ import secrets
 
 from django.conf import settings
 from django.core.mail import send_mail
+from shared.exceptions import Result
 
 from domains.accounts.enums import UserRole
 from domains.accounts.repositories import UserRepository
-from shared.exceptions import Result
 
 
 class AuthService:
@@ -36,6 +36,7 @@ class AuthService:
         temporary_password = secrets.token_urlsafe(12)
 
         from domains.accounts.models import User
+
         user = User.objects.create_user(
             email=email,
             username=username,

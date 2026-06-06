@@ -1,5 +1,6 @@
-from domains.tenants.models import Domain, Tenant
 from shared.exceptions import Result
+
+from domains.tenants.models import Domain, Tenant
 
 
 class TenantService:

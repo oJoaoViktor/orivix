@@ -41,10 +41,12 @@ class LoginView(APIView):
             return Response({"detail": result.error.message}, status=status.HTTP_401_UNAUTHORIZED)
 
         refresh = RefreshToken.for_user(result.data)
-        return Response({
-            "access": str(refresh.access_token),
-            "refresh": str(refresh),
-        })
+        return Response(
+            {
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+            }
+        )
 
 
 class RefreshView(APIView):
@@ -56,13 +58,17 @@ class RefreshView(APIView):
 
         token = request.data.get("refresh")
         if not token:
-            return Response({"detail": "Refresh token é obrigatório."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"detail": "Refresh token é obrigatório."}, status=status.HTTP_401_UNAUTHORIZED
+            )
 
         try:
             refresh = RefreshToken(token)
             return Response({"access": str(refresh.access_token)})
         except TokenError:
-            return Response({"detail": "Token inválido ou expirado."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"detail": "Token inválido ou expirado."}, status=status.HTTP_401_UNAUTHORIZED
+            )
 
 
 class ChangePasswordView(APIView):
@@ -115,8 +121,12 @@ class ResetPasswordView(APIView):
         except Exception:
             user = None
 
-        if not user or not password_reset_token.check_token(user, serializer.validated_data["token"]):
-            return Response({"detail": "Link inválido ou expirado."}, status=status.HTTP_400_BAD_REQUEST)
+        if not user or not password_reset_token.check_token(
+            user, serializer.validated_data["token"]
+        ):
+            return Response(
+                {"detail": "Link inválido ou expirado."}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         user.set_password(serializer.validated_data["new_password"])
         user.force_password_change = False

@@ -25,32 +25,42 @@ def auth_client(client, admin):
 
 class TestAdvisorCreate:
     def test_admin_can_create_advisor(self, auth_client):
-        response = auth_client.post(reverse("admin-advisor-list"), {
-            "email": "advisor@escola.com",
-            "username": "advisor1",
-        })
+        response = auth_client.post(
+            reverse("admin-advisor-list"),
+            {
+                "email": "advisor@escola.com",
+                "username": "advisor1",
+            },
+        )
 
         assert response.status_code == 201
         assert response.data["email"] == "advisor@escola.com"
         assert response.data["role"] == "advisor"
 
     def test_created_advisor_has_force_password_change(self, auth_client):
-        auth_client.post(reverse("admin-advisor-list"), {
-            "email": "advisor@escola.com",
-            "username": "advisor1",
-        })
+        auth_client.post(
+            reverse("admin-advisor-list"),
+            {
+                "email": "advisor@escola.com",
+                "username": "advisor1",
+            },
+        )
 
         from domains.accounts.models import User
+
         user = User.objects.get(email="advisor@escola.com")
         assert user.force_password_change is True
 
     def test_create_advisor_with_duplicate_email_returns_400(self, auth_client):
         AdvisorFactory(email="advisor@escola.com")
 
-        response = auth_client.post(reverse("admin-advisor-list"), {
-            "email": "advisor@escola.com",
-            "username": "outro",
-        })
+        response = auth_client.post(
+            reverse("admin-advisor-list"),
+            {
+                "email": "advisor@escola.com",
+                "username": "outro",
+            },
+        )
 
         assert response.status_code == 400
 
@@ -58,18 +68,24 @@ class TestAdvisorCreate:
         advisor = AdvisorFactory()
         client.force_authenticate(user=advisor)
 
-        response = client.post(reverse("admin-advisor-list"), {
-            "email": "novo@escola.com",
-            "username": "novo",
-        })
+        response = client.post(
+            reverse("admin-advisor-list"),
+            {
+                "email": "novo@escola.com",
+                "username": "novo",
+            },
+        )
 
         assert response.status_code == 403
 
     def test_unauthenticated_cannot_create_advisor(self, client):
-        response = client.post(reverse("admin-advisor-list"), {
-            "email": "novo@escola.com",
-            "username": "novo",
-        })
+        response = client.post(
+            reverse("admin-advisor-list"),
+            {
+                "email": "novo@escola.com",
+                "username": "novo",
+            },
+        )
 
         assert response.status_code == 401
 

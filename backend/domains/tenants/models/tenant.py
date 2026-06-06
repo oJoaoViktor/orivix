@@ -1,7 +1,6 @@
-from shared.utils import generate_uuid7
-
 from django.db import models
 from django_tenants.models import TenantMixin
+from shared.utils import generate_uuid7
 
 
 class Tenant(TenantMixin):

@@ -7,37 +7,66 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Tenant',
+            name="Tenant",
             fields=[
-                ('schema_name', models.CharField(db_index=True, max_length=63, unique=True, validators=[django_tenants.postgresql_backend.base._check_schema_name])),
-                ('id', models.UUIDField(default=shared.utils.generate_uuid7, editable=False, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=100)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "schema_name",
+                    models.CharField(
+                        db_index=True,
+                        max_length=63,
+                        unique=True,
+                        validators=[django_tenants.postgresql_backend.base._check_schema_name],
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=shared.utils.generate_uuid7,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'verbose_name': 'Escola',
-                'verbose_name_plural': 'Escolas',
+                "verbose_name": "Escola",
+                "verbose_name_plural": "Escolas",
             },
         ),
         migrations.CreateModel(
-            name='Domain',
+            name="Domain",
             fields=[
-                ('domain', models.CharField(db_index=True, max_length=253, unique=True)),
-                ('is_primary', models.BooleanField(db_index=True, default=True)),
-                ('id', models.UUIDField(default=shared.utils.generate_uuid7, editable=False, primary_key=True, serialize=False)),
-                ('tenant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='domains', to='tenants.tenant')),
+                ("domain", models.CharField(db_index=True, max_length=253, unique=True)),
+                ("is_primary", models.BooleanField(db_index=True, default=True)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=shared.utils.generate_uuid7,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "tenant",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="domains",
+                        to="tenants.tenant",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Domínio',
-                'verbose_name_plural': 'Domínios',
+                "verbose_name": "Domínio",
+                "verbose_name_plural": "Domínios",
             },
         ),
     ]
