@@ -1,0 +1,25 @@
+meta {
+  name: Toggle Advisor Active
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/admin/advisors/:id/
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+params:path {
+  id:
+}
+
+body:json {
+  {
+    "is_active": false
+  }
+}
