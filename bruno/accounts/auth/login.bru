@@ -1,0 +1,25 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/auth/login/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "credential": "admin@orivix.com",
+    "password": "senha@123"
+  }
+}
+
+script:after-response {
+  if (res.status === 200) {
+    bru.setVar("accessToken", res.body.access);
+    bru.setVar("refreshToken", res.body.refresh);
+  }
+}

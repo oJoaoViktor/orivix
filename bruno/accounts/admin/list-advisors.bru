@@ -1,0 +1,14 @@
+meta {
+  name: List Advisors
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/admin/advisors/
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
