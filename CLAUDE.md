@@ -71,3 +71,7 @@ API requests are versioned as Bruno collection files under `bruno/`. After each 
 ## Git
 
 Manage commits autonomously — no need to ask for approval. Commit at logical progress points (e.g., after a working scaffold, after a complete feature, after migrations pass). Follow Conventional Commits format. All commit messages must be in English.
+
+## README
+
+Update `README.md` on every PR/release. Review and update: version number, phase status, and any setup instructions that changed.
