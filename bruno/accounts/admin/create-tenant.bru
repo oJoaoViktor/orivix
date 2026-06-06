@@ -1,0 +1,23 @@
+meta {
+  name: Create Tenant
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/admin/tenants/
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "SENAI Campinas",
+    "schema_name": "senai_campinas",
+    "domain": "senai.localhost"
+  }
+}

@@ -1,0 +1,14 @@
+meta {
+  name: List Tenants
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/admin/tenants/
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
