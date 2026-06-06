@@ -1,12 +1,12 @@
 # Roadmap
 
-## Phase 1 — Foundation
-- [ ] Repository setup (GitHub Actions, pre-commit, ruff, SonarCloud)
-- [ ] Backend project scaffold (uv, Django, DRF, django-tenants, settings per environment)
-- [ ] `BaseModel` and shared utilities
-- [ ] `Tenant` and `Domain` models (public schema)
-- [ ] `User` model and authentication (JWT, first login, forgot password)
-- [ ] Admin role: manage tenants and advisor accounts
+## Phase 1 — Foundation ✅
+- [x] Repository setup (GitHub Actions, pre-commit, ruff, SonarCloud)
+- [x] Backend project scaffold (uv, Django, DRF, django-tenants, settings per environment)
+- [x] `BaseModel` and shared utilities
+- [x] `Tenant` and `Domain` models (public schema)
+- [x] `User` model and authentication (JWT, first login, forgot password)
+- [x] Admin role: manage tenants and advisor accounts
 
 ## Phase 2 — Classrooms & Students
 - [ ] `Classroom` CRUD
