@@ -1,6 +1,7 @@
 from shared.utils import generate_uuid7
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.core.validators import RegexValidator
 from django.db import models
 
 from domains.accounts.enums import UserRole
@@ -28,7 +29,11 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=generate_uuid7, editable=False)
     email = models.EmailField(unique=True)
-    username = models.CharField(max_length=150, unique=True)
+    username = models.CharField(
+        max_length=150,
+        unique=True,
+        validators=[RegexValidator(r"^[^@]+$", "Username não pode conter @.")],
+    )
     role = models.CharField(max_length=20, choices=UserRole.choices)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
