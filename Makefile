@@ -16,7 +16,7 @@ format:
 	uv run ruff format backend/
 
 migrate:
-	uv run python backend/manage.py migrate
+	uv run python backend/manage.py migrate_schemas --shared
 
 makemigrations:
 	uv run python backend/manage.py makemigrations

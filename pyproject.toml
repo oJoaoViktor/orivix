@@ -1,0 +1,42 @@
+[project]
+name = "orivix"
+version = "0.1.0"
+description = "Sistema de digitalização de presenças e observações para escolas técnicas"
+authors = [{ name = "João Viktor" }]
+requires-python = ">=3.13"
+dependencies = [
+    "django>=5.2",
+    "djangorestframework>=3.16",
+    "djangorestframework-simplejwt>=5.5",
+    "django-tenants>=3.7",
+    "channels>=4.2",
+    "psycopg[binary]>=3.2",
+    "python-decouple>=3.8",
+    "uuid7>=0.1.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4",
+    "pytest-django>=4.11",
+    "factory-boy>=3.3",
+    "faker>=37.4",
+    "ruff>=0.11",
+    "pytest-cov>=6.1",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.base"
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+testpaths = ["backend"]
+addopts = "--cov=backend --cov-report=term-missing --cov-fail-under=80"
