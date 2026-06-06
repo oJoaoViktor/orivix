@@ -1,8 +1,7 @@
-from shared.utils import generate_uuid7
-
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import RegexValidator
 from django.db import models
+from shared.utils import generate_uuid7
 
 from domains.accounts.enums import UserRole
 

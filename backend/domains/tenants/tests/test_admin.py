@@ -26,28 +26,37 @@ def auth_client(client, admin):
 
 class TestTenantCreate:
     def test_admin_can_create_tenant(self, auth_client):
-        response = auth_client.post(reverse("admin-tenant-list"), {
-            "name": "SENAI Campinas",
-            "schema_name": "senai_campinas",
-            "domain": "senai.localhost",
-        })
+        response = auth_client.post(
+            reverse("admin-tenant-list"),
+            {
+                "name": "SENAI Campinas",
+                "schema_name": "senai_campinas",
+                "domain": "senai.localhost",
+            },
+        )
 
         assert response.status_code == 201
         assert response.data["name"] == "SENAI Campinas"
         assert Tenant.objects.filter(schema_name="senai_campinas").exists()
 
     def test_create_tenant_with_duplicate_schema_returns_400(self, auth_client):
-        auth_client.post(reverse("admin-tenant-list"), {
-            "name": "SENAI Campinas",
-            "schema_name": "senai_campinas",
-            "domain": "senai.localhost",
-        })
+        auth_client.post(
+            reverse("admin-tenant-list"),
+            {
+                "name": "SENAI Campinas",
+                "schema_name": "senai_campinas",
+                "domain": "senai.localhost",
+            },
+        )
 
-        response = auth_client.post(reverse("admin-tenant-list"), {
-            "name": "Outra Escola",
-            "schema_name": "senai_campinas",
-            "domain": "outra.localhost",
-        })
+        response = auth_client.post(
+            reverse("admin-tenant-list"),
+            {
+                "name": "Outra Escola",
+                "schema_name": "senai_campinas",
+                "domain": "outra.localhost",
+            },
+        )
 
         assert response.status_code == 400
 
@@ -55,20 +64,26 @@ class TestTenantCreate:
         advisor = AdvisorFactory()
         client.force_authenticate(user=advisor)
 
-        response = client.post(reverse("admin-tenant-list"), {
-            "name": "SENAI Campinas",
-            "schema_name": "senai_campinas",
-            "domain": "senai.localhost",
-        })
+        response = client.post(
+            reverse("admin-tenant-list"),
+            {
+                "name": "SENAI Campinas",
+                "schema_name": "senai_campinas",
+                "domain": "senai.localhost",
+            },
+        )
 
         assert response.status_code == 403
 
     def test_unauthenticated_cannot_create_tenant(self, client):
-        response = client.post(reverse("admin-tenant-list"), {
-            "name": "SENAI Campinas",
-            "schema_name": "senai_campinas",
-            "domain": "senai.localhost",
-        })
+        response = client.post(
+            reverse("admin-tenant-list"),
+            {
+                "name": "SENAI Campinas",
+                "schema_name": "senai_campinas",
+                "domain": "senai.localhost",
+            },
+        )
 
         assert response.status_code == 401
 

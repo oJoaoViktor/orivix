@@ -19,10 +19,13 @@ def advisor():
 
 class TestLogin:
     def test_login_with_email_returns_tokens(self, client, advisor):
-        response = client.post(reverse("auth-login"), {
-            "credential": "joao@escola.com",
-            "password": "senha@123",
-        })
+        response = client.post(
+            reverse("auth-login"),
+            {
+                "credential": "joao@escola.com",
+                "password": "senha@123",
+            },
+        )
 
         assert response.status_code == 200
         assert "access" in response.data
@@ -31,29 +34,38 @@ class TestLogin:
     def test_login_with_username_returns_tokens(self, client):
         AdvisorFactory(username="joao", password="senha@123")
 
-        response = client.post(reverse("auth-login"), {
-            "credential": "joao",
-            "password": "senha@123",
-        })
+        response = client.post(
+            reverse("auth-login"),
+            {
+                "credential": "joao",
+                "password": "senha@123",
+            },
+        )
 
         assert response.status_code == 200
         assert "access" in response.data
 
     def test_login_with_wrong_password_returns_401(self, client, advisor):
-        response = client.post(reverse("auth-login"), {
-            "credential": "joao@escola.com",
-            "password": "errada",
-        })
+        response = client.post(
+            reverse("auth-login"),
+            {
+                "credential": "joao@escola.com",
+                "password": "errada",
+            },
+        )
 
         assert response.status_code == 401
 
     def test_login_with_inactive_user_returns_403(self, client):
         AdvisorFactory(email="joao@escola.com", password="senha@123", is_active=False)
 
-        response = client.post(reverse("auth-login"), {
-            "credential": "joao@escola.com",
-            "password": "senha@123",
-        })
+        response = client.post(
+            reverse("auth-login"),
+            {
+                "credential": "joao@escola.com",
+                "password": "senha@123",
+            },
+        )
 
         assert response.status_code == 403
 
@@ -65,10 +77,13 @@ class TestLogin:
 
 class TestRefresh:
     def test_refresh_returns_new_access_token(self, client, advisor):
-        login = client.post(reverse("auth-login"), {
-            "credential": "joao@escola.com",
-            "password": "senha@123",
-        })
+        login = client.post(
+            reverse("auth-login"),
+            {
+                "credential": "joao@escola.com",
+                "password": "senha@123",
+            },
+        )
         refresh_token = login.data["refresh"]
 
         response = client.post(reverse("auth-refresh"), {"refresh": refresh_token})
@@ -86,10 +101,13 @@ class TestChangePassword:
     def test_change_password_succeeds(self, client, advisor):
         client.force_authenticate(user=advisor)
 
-        response = client.post(reverse("auth-change-password"), {
-            "current_password": "senha@123",
-            "new_password": "novaSenha@456",
-        })
+        response = client.post(
+            reverse("auth-change-password"),
+            {
+                "current_password": "senha@123",
+                "new_password": "novaSenha@456",
+            },
+        )
 
         assert response.status_code == 200
         advisor.refresh_from_db()
@@ -99,17 +117,23 @@ class TestChangePassword:
     def test_change_password_with_wrong_current_password_returns_400(self, client, advisor):
         client.force_authenticate(user=advisor)
 
-        response = client.post(reverse("auth-change-password"), {
-            "current_password": "errada",
-            "new_password": "novaSenha@456",
-        })
+        response = client.post(
+            reverse("auth-change-password"),
+            {
+                "current_password": "errada",
+                "new_password": "novaSenha@456",
+            },
+        )
 
         assert response.status_code == 400
 
     def test_change_password_requires_authentication(self, client):
-        response = client.post(reverse("auth-change-password"), {
-            "current_password": "senha@123",
-            "new_password": "novaSenha@456",
-        })
+        response = client.post(
+            reverse("auth-change-password"),
+            {
+                "current_password": "senha@123",
+                "new_password": "novaSenha@456",
+            },
+        )
 
         assert response.status_code == 401

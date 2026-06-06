@@ -1,7 +1,7 @@
-from shared.utils import generate_uuid7
-
 from django.conf import settings
 from django.db import models
+
+from shared.utils import generate_uuid7
 
 
 class SoftDeleteQuerySet(models.QuerySet):
