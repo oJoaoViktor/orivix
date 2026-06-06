@@ -17,9 +17,7 @@ body:json {
   }
 }
 
-script:after-response {
-  if (res.status === 200) {
-    bru.setVar("accessToken", res.body.access);
-    bru.setVar("refreshToken", res.body.refresh);
-  }
+script:post-response {
+  bru.setEnvVar("accessToken", res.body.access);
+  bru.setEnvVar("refreshToken", res.body.refresh);
 }

@@ -16,8 +16,6 @@ body:json {
   }
 }
 
-script:after-response {
-  if (res.status === 200) {
-    bru.setVar("accessToken", res.body.access);
-  }
+script:post-response {
+  bru.setEnvVar("accessToken", res.body.access);
 }
