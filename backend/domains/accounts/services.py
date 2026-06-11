@@ -1,7 +1,7 @@
 import secrets
 
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives, send_mail
 from shared.exceptions import Result
 
 from domains.accounts.enums import UserRole
@@ -66,9 +66,16 @@ class AuthService:
     @staticmethod
     def send_password_reset_email(user, uid: str, token: str) -> None:
         reset_url = f"{settings.FRONTEND_URL}/reset-password?uid={uid}&token={token}"
-        send_mail(
-            subject="Redefina sua senha — Orivix",
-            message=f"Clique no link para redefinir sua senha:\n\n{reset_url}",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
+        text_body = f"Clique no link para redefinir sua senha:\n\n{reset_url}"
+        html_body = (
+            f"<p>Clique no link abaixo para redefinir sua senha:</p>"
+            f'<p><a href="{reset_url}">{reset_url}</a></p>'
         )
+        msg = EmailMultiAlternatives(
+            subject="Redefina sua senha — Orivix",
+            body=text_body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[user.email],
+        )
+        msg.attach_alternative(html_body, "text/html")
+        msg.send()

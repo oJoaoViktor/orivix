@@ -17,7 +17,7 @@ class UserFactory(DjangoModelFactory):
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
-        password = kwargs.pop("password", "senha@123")
+        password = kwargs.pop("password", "password@123")
         user = model_class(**kwargs)
         user.set_password(password)
         user.save()

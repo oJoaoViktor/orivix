@@ -28,37 +28,37 @@ class TestAdvisorCreate:
         response = auth_client.post(
             reverse("admin-advisor-list"),
             {
-                "email": "advisor@escola.com",
+                "email": "advisor@example.com",
                 "username": "advisor1",
             },
         )
 
         assert response.status_code == 201
-        assert response.data["email"] == "advisor@escola.com"
+        assert response.data["email"] == "advisor@example.com"
         assert response.data["role"] == "advisor"
 
     def test_created_advisor_has_force_password_change(self, auth_client):
         auth_client.post(
             reverse("admin-advisor-list"),
             {
-                "email": "advisor@escola.com",
+                "email": "advisor@example.com",
                 "username": "advisor1",
             },
         )
 
         from domains.accounts.models import User
 
-        user = User.objects.get(email="advisor@escola.com")
+        user = User.objects.get(email="advisor@example.com")
         assert user.force_password_change is True
 
     def test_create_advisor_with_duplicate_email_returns_400(self, auth_client):
-        AdvisorFactory(email="advisor@escola.com")
+        AdvisorFactory(email="advisor@example.com")
 
         response = auth_client.post(
             reverse("admin-advisor-list"),
             {
-                "email": "advisor@escola.com",
-                "username": "outro",
+                "email": "advisor@example.com",
+                "username": "advisor",
             },
         )
 
@@ -71,8 +71,8 @@ class TestAdvisorCreate:
         response = client.post(
             reverse("admin-advisor-list"),
             {
-                "email": "novo@escola.com",
-                "username": "novo",
+                "email": "new@example.com",
+                "username": "new",
             },
         )
 
@@ -82,8 +82,8 @@ class TestAdvisorCreate:
         response = client.post(
             reverse("admin-advisor-list"),
             {
-                "email": "novo@escola.com",
-                "username": "novo",
+                "email": "new@example.com",
+                "username": "new",
             },
         )
 
